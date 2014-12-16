@@ -1,9 +1,0 @@
-OCAMLC=ocamlc
-OCAMLLEX=ocamllex
-OCAMLYACC=ocamlyacc
-
-
-all: parser.cmi parser.cmo lexer.cmo main.cmo
-	ocamlc -o main lexer.cmo parser.cmo main.cmo
-clean:
-	rm .cmo .cmi
