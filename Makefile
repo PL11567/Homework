@@ -7,7 +7,7 @@ main.cmo: main.ml parser.cmo lexer.cmo
 	ocamlc -c main.ml
 
 lexer.cmo: lexer.ml
-	ocamlc -c cookieLex.ml
+	ocamlc -c lexer.ml
 
 parser.cmo: parser.ml parser.cmi
 	ocamlc -c parser.ml
@@ -19,6 +19,6 @@ parser.mli parser.ml: parser.mly
 	ocamlyacc parser.mly
 
 lexer.ml: lexer.mll parser.cmi
-	ocamllex cookieLex.mll
+	ocamllex lexer.mll
 clean:
 	rm .cmo .cmi
