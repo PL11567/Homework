@@ -1,3 +1,18 @@
+%{
+open Printf
+open Lexing
+%}
+
+
+%token <int>INTEIRO
+%token <string>REAL
+%token <string>FICHEIRO
+%token <string>DATASIMPLES
+%token <string>STRING
+%token <char>DOT
+%token <char>TWODOTS
+%token <char>ENTER  
+
 %start secform
 %type <unit> secform
 %%
