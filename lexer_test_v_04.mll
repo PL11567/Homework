@@ -10,13 +10,13 @@
 
 
 let id_datasimples = ['0'-'9']['0'-'9']['0'-'9']['0'-'9']['-']['0'-'9']['0'-'9']['-']['0'-'9']['0'-'9']
-let id_strings = ['a'-'z' 'A'-'Z' '\t' ' ' ',' '(' ')' '/' '_' ]+
+let id_string = ['a'-'z' 'A'-'Z' '\t' ' ' ',' '(' ')' '/' '_' ]+
 let id_dot = ['.']
 let id_twodots = [':']
 let id_enter = ['\n']
 let id_inteiro = ['0'-'9']+
 let id_real =  id_inteiro id_dot id_inteiro 
-let id_ficheiro =  id_strings id_inteiro+ id_dot 'l''o''g'
+let id_ficheiro =  id_string id_inteiro+ id_dot 'l''o''g'
 
 rule token = parse
   
@@ -27,7 +27,7 @@ rule token = parse
  | id_enter as enter { ENTER (enter) }	
  | id_ficheiro as ficheiro { FICHEIRO (ficheiro) }
  | id_datasimples as datasimples { DATASIMPLES (datasimples) }
- | id_strings as strings { STRINGS (strings) }
+ | id_string as string { STRING (string) }
  | _ 
  	{ token lexbuf }
  | eof { raise End_of_file }
