@@ -103,10 +103,3 @@ rule tokenize = parse
   		}
  | _ { tokenize lexbuf }
  | eof { raise End_of_file }
-
-
-{
-
-	    
-	    
-}
