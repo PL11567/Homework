@@ -111,7 +111,6 @@ rule tokenize = parse
  | id_datasimples as datasimples { DATASIMPLES (datasimples) }
  | (id_stname as stname) { STNAME (stname) }
  | id_coordenada as coordenada { COORDENADA (coordenada) }
- (* | id_datasvazias as datasvazias { DATASVAZIAS (datasvazias)} *)
  | id_datas as datas 
 		{ 
 		let remove_blanks = Str.global_replace (Str.regexp "[ ]+") "" in DATAS (remove_blanks datas)
