@@ -1,7 +1,6 @@
 %{
 open Printf
 open Lexing
-
 let parse_error s = print_endline s;;
 %}
 
@@ -49,7 +48,7 @@ header:
 	STRINGS ENTER STRINGS ENTER STRINGS TWODOTS ENTER STNAME ENTER 
 	{ Printf.printf "%s %s %s %s %s %c %s %s %s" $1 $2 $3 $4 $5 $6 $7 $8 $9; flush stdout}
 ;
-/************************** FORM *************************************/
+/************************** 0 FORM *************************************/
 
 secform:
 
@@ -69,12 +68,12 @@ secform:
 	{ Printf.printf "%s%c%s%c%s %c%s%c%c%c%s%s" $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12; flush stdout}
 
 ;
-/*********** Site Identification of the GNSS Monument *****************/
+/*********** 1 Site Identification of the GNSS Monument *****************/
 
 secsite:
 
 | INTEIRO DOT SITEIDENT ENTER
-	{ Printf.printf "%i %c %s %s" $1 $2 $3 $4; flush stdout}
+	{ Printf.printf "%i%c %s %s" $1 $2 $3 $4; flush stdout}
 | SITENAME TWODOTS STRINGS ENTER
 	{Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}
 | FCHID TWODOTS STRINGS ENTER 
@@ -112,12 +111,12 @@ secsite:
 | ADDINFO TWODOTS STRINGS ENTER
 	{Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}
 ;
-/************** Site Location Information *****************************/
+/************** 2 Site Location Information *****************************/
 
 siteloc:
 
 | INTEIRO DOT GNSSTRINF ENTER
-	{ Printf.printf "%i %c %s %s" $1 $2 $3 $4; flush stdout}
+	{ Printf.printf "%i%c %s %s" $1 $2 $3 $4; flush stdout}
 | CITY TWODOTS STRINGS ENTER 
 	{ Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}
 | STATE TWODOTS STRINGS ENTER 
@@ -139,18 +138,18 @@ siteloc:
 | STRINGS STRINGS TWODOTS COORDENADA ENTER 
 	{ Printf.printf "%s %s %c %s %s" $1 $2 $3 $4 $5; flush stdout}
 | STRINGS DOT STRINGS TWODOTS REAL ENTER
-	{ Printf.printf "%s %c %s %c %f %s" $1 $2 $3 $4 $5 $6; flush stdout}
+	{ Printf.printf "%s %c %s %c %.3f %s" $1 $2 $3 $4 $5 $6; flush stdout}
 | ADDINFO TWODOTS ENTER 
 	{ Printf.printf "%s %c %s" $1 $2 $3; flush stdout}
 ;
-/************** GNSS Receiver Information  ************************* */
+/************** 3 GNSS Receiver Information  ************************* */
 
 gnss_rec_info:
 
 | INTEIRO DOT GNSSRCVINF ENTER
-	{ Printf.printf "%i %c %s %s" $1 $2 $3 $4; flush stdout}
+	{ Printf.printf "%i%c %s %s" $1 $2 $3 $4; flush stdout}
 | REAL RCVTYP TWODOTS STRINGS INTEIRO STRINGS ENTER
-	{ Printf.printf "%f %s %c %s %i %s %s" $1 $2 $3 $4 $5 $6 $7; flush stdout}
+	{ Printf.printf "%.1f %s %c %s %i %s %s" $1 $2 $3 $4 $5 $6 $7; flush stdout}
 | SATSYS TWODOTS STRINGS STRINGS ENTER
 	{ Printf.printf "%s %c %s %s %s" $1 $2 $3 $4 $5; flush stdout}
 | SERIALN TWODOTS INTEIRO ENTER
@@ -161,8 +160,8 @@ gnss_rec_info:
 	{ Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}
 | DATINST TWODOTS DATAS ENTER
 	{ Printf.printf "%s %c %s %s" $1 $2 (String.uppercase $3) $4; flush stdout}
-| DATREM TWODOTS STRINGS STRINGS STRINGS TWODOTS STRINGS ENTER
-	{ Printf.printf "%s %c %s %s %s %c %s %s" $1 $2 $3 $4 $5 $6 $7 $8; flush stdout}
+| DATREM TWODOTS DATAS ENTER
+	{	Printf.printf "%s %c %s %s" $1 $2 (String.uppercase $3) $4; flush stdout}
 | STRINGS DOT TWODOTS STRINGS ENTER
 	{ Printf.printf "%s %c %c %s %s" $1 $2 $3 $4 $5; flush stdout}
 | ADDINFO TWODOTS STRINGS ENTER 
@@ -171,7 +170,7 @@ gnss_rec_info:
 /***  3.x  ***/
 
 | INTEIRO DOT STRINGS TWODOTS STRINGS
-	{Printf.printf "%i%c%s%c %s" $1 $2 $3 $4 ; flush stdout}
+	{Printf.printf "%i%c%s%c %s" $1 $2 $3 $4 $5; flush stdout}
 | SATSYS TWODOTS STRINGS 
 	{Printf.printf "%s %c %s" $1 $2 $3 ; flush stdout}
 | SERIALN TWODOTS STRINGS 
@@ -223,7 +222,7 @@ gnss_ant_info:
 | DATREM TWODOTS DATAS ENTER
 	{	Printf.printf "%s %c %s %s" $1 $2 (String.uppercase $3) $4; flush stdout}
 | ADDINFO TWODOTS STRINGS ENTER
-	{ Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}
+	{ Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}	
 	
 /***   4.x  ***/
 
