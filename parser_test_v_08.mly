@@ -2,6 +2,7 @@
 open Printf
 open Lexing
 
+let parse_error s = print_endline s;;
 %}
 
 %token <int>INTEIRO
@@ -32,16 +33,28 @@ open Lexing
 
 %%
 
-init: 
- STRINGS ENTER STRINGS ENTER STRINGS TWODOTS ENTER STNAME ENTER 
-	{ Printf.printf "%s %s %s %s %s %c %s %s %s " $1 $2 $3 $4 $5 $6 $7 $8 $9; flush stdout}
+init:
+| header init{}
+| secform {}
+| secsite {}
+| siteloc {}
+| gnss_rec_info {}
+| gnss_ant_info {}
 
+
+
+/************************* CABEÇALHO **********************************/
+
+header:
+	STRINGS ENTER STRINGS ENTER STRINGS TWODOTS ENTER STNAME ENTER 
+	{ Printf.printf "%s %s %s %s %s %c %s %s %s" $1 $2 $3 $4 $5 $6 $7 $8 $9; flush stdout}
+;
 /************************** FORM *************************************/
 
-| INTEIRO DOT FORM 
-	{ Printf.printf "%i %c %s " $1 $2 $3 ; flush stdout}
-| ENTER 
-	{ Printf.printf "%s" $1 ; flush stdout}
+secform:
+
+| INTEIRO DOT FORM ENTER
+	{ Printf.printf "%i%c %s %s" $1 $2 $3 $4 ; flush stdout}
 | STRINGS TWODOTS STRINGS ENTER
 	{ Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}
 | DATPREP TWODOTS DATASIMPLES ENTER
@@ -55,9 +68,10 @@ init:
 | MODSEC TWODOTS STRINGS DOT STRINGS DOT STRINGS DOT DOT DOT STRINGS ENTER 
 	{ Printf.printf "%s%c%s%c%s %c%s%c%c%c%s%s" $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12; flush stdout}
 
-
+;
 /*********** Site Identification of the GNSS Monument *****************/
 
+secsite:
 
 | INTEIRO DOT SITEIDENT ENTER
 	{ Printf.printf "%i %c %s %s" $1 $2 $3 $4; flush stdout}
@@ -82,7 +96,7 @@ init:
 | MRKRDESC TWODOTS STRINGS ENTER
 	{Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}
 | DATINST TWODOTS DATAS ENTER
-	{Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}
+	{	Printf.printf "%s %c %s %s" $1 $2 (String.uppercase $3) $4; flush stdout}	
 | GLCCHCTSC TWODOTS STRINGS ENTER
 	{Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}
 | BDRCKTYP TWODOTS STRINGS ENTER
@@ -97,8 +111,10 @@ init:
 	{Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}
 | ADDINFO TWODOTS STRINGS ENTER
 	{Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}
-	
+;
 /************** Site Location Information *****************************/
+
+siteloc:
 
 | INTEIRO DOT GNSSTRINF ENTER
 	{ Printf.printf "%i %c %s %s" $1 $2 $3 $4; flush stdout}
@@ -126,8 +142,10 @@ init:
 	{ Printf.printf "%s %c %s %c %f %s" $1 $2 $3 $4 $5 $6; flush stdout}
 | ADDINFO TWODOTS ENTER 
 	{ Printf.printf "%s %c %s" $1 $2 $3; flush stdout}
-
+;
 /************** GNSS Receiver Information  ************************* */
+
+gnss_rec_info:
 
 | INTEIRO DOT GNSSRCVINF ENTER
 	{ Printf.printf "%i %c %s %s" $1 $2 $3 $4; flush stdout}
@@ -142,7 +160,7 @@ init:
 | ELEVCUTOFF TWODOTS STRINGS ENTER
 	{ Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}
 | DATINST TWODOTS DATAS ENTER
-	{ Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}
+	{ Printf.printf "%s %c %s %s" $1 $2 (String.uppercase $3) $4; flush stdout}
 | DATREM TWODOTS STRINGS STRINGS STRINGS TWODOTS STRINGS ENTER
 	{ Printf.printf "%s %c %s %s %s %c %s %s" $1 $2 $3 $4 $5 $6 $7 $8; flush stdout}
 | STRINGS DOT TWODOTS STRINGS ENTER
@@ -167,9 +185,11 @@ init:
 	{Printf.printf "%s %c %c %s %s" $1 $2 $3 $4 $5; flush stdout}
 | ADDINFO TWODOTS STRINGS ENTER
 	{Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}
+;
 
+/************** 4 GNSS Antenna Information  ************************* */
 
-/************** GNSS Antenna Information  ************************* */
+gnss_ant_info:
 
 | INTEIRO DOT GNSSANTINF ENTER
 	{Printf.printf "%i %c %s %s" $1 $2 $3 $4; flush stdout}
@@ -202,7 +222,7 @@ init:
 | ADDINFO TWODOTS ENTER
 	{ Printf.printf "%s %c %s" $1 $2 $3; flush stdout}	
 	
-/*******************   GNSS Antenna Information **********************/
+/***   4.x  ***/
 
 | INTEIRO DOT STRINGS TWODOTS STRINGS INTEIRO STRINGS DOT STRINGS STRINGS ENTER
 	{ Printf.printf "%i %c %s %c %s %i %s %c %s %s %s" $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11; flush stdout}
@@ -232,6 +252,5 @@ init:
 	{ Printf.printf "%s %c %s %s %s %c %s %s" $1 $2 $3 $4 $5 $6 $7 $8; flush stdout}
 | ADDINFO TWODOTS STRINGS ENTER
 { Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}
-
-
+;
 %%
