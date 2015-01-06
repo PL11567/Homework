@@ -3,16 +3,14 @@
 	open Printf
 	open Lexing
 	open String
+	open Str
 	exception Eof
-
 
 let create_hashtable size init =
     let tbl = Hashtbl.create size in
     List.iter (fun (key, data) -> Hashtbl.add tbl key data) init;
     tbl
-    
  
-
 let string_table = create_hashtable 57 
 		[  	
 		  ("Form", FORM "Form"); 
@@ -71,8 +69,6 @@ let string_table = create_hashtable 57
 		  ("Antenna Cable Type", ANTCABTYP "Antenna Cable Type");
 		  ("Antenna Cable Length", ANTCABLENGTH "Antenna Cable Length");
 		]
-
-
 }
 
 let id_datas = ['0'-'9']['0'-'9']['0'-'9']['0'-'9']['-']['0'-'9']['0'-'9']['-']['0'-'9']['0'-'9']['T']['0'-'9']['0'-'9'][':']['0'-'9']['0'-'9'][' ']*['Z''z']
@@ -118,7 +114,11 @@ rule tokenize = parse
  | (id_stname as stname) { STNAME (stname) }
  | id_coordenada as coordenada { COORDENADA (coordenada) }
  | id_datasvazias as datasvazias { DATASVAZIAS (datasvazias)}
- | id_datas as datas {DATAS (datas)}
+ | id_datas as datas 
+		{ 
+		let remove_blanks = Str.global_replace (Str.regexp "[ ]+") "" in DATAS (remove_blanks datas)
+		}
+	
  | id_blank *(id_strings as word) id_blank *
   		{ 
   			let word_no_spaces = String.trim word in 
