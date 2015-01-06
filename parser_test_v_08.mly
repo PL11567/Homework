@@ -20,12 +20,61 @@ let parse_error s = print_endline s;;
 %token <string>LATLONG
 %token <string>FRACSPACING
 %token <string>NSITE
-%token <string>FORM PREP DATPREP RP IF LOG MODSEC
-%token <string>SITEIDENT SITENAME FCHID MNMTINSC IRESDNUM CDPNUM MNMTDESC HGHTMNMT MNMTFND FNDDPTH 
-%token <string>MRKRDESC DATINST GLCCHCTSC BDRCKTYP BDRCKCOND FRACTSPAC FAULTZN DSTACT ADDINFO GNSSTRINF CITY STATE COUNTRY TECTPLT 
-%token <string>POSIRTF XCOORD YCOORD ZCOORD ELEV
-%token <string>GNSSRCVINF RCVTYP SATSYS SERIALN FIRMVER ELEVCUTOFF DATREM TEMPSTAB 
-%token <string>GNSSANTINF ANTTYP ANTREFPNT MARKUP MARKNORTH MARKEAST ALIGNTRUE ANTRNDTYP RNDSERIALN ANTCABTYP ANTCABLENGTH
+%token <string>FORM
+%token <string>PREP
+%token <string>DATPREP
+%token <string>RP
+%token <string>IF
+%token <string>LOG
+%token <string>MODSEC
+%token <string>SITEIDENT
+%token <string>SITENAME
+%token <string>FCHID
+%token <string>MNMTINSC
+%token <string>IRESDNUM
+%token <string>CDPNUM
+%token <string>MNMTDESC
+%token <string>HGHTMNMT
+%token <string>MNMTFND
+%token <string>FNDDPTH 
+%token <string>MRKRDESC
+%token <string>DATINST
+%token <string>GLCCHCTSC
+%token <string>BDRCKTYP
+%token <string>BDRCKCOND
+%token <string>FRACTSPAC
+%token <string>FAULTZN
+%token <string>DSTACT
+%token <string>ADDINFO
+%token <string>GNSSTRINF
+%token <string>CITY
+%token <string>STATE
+%token <string>COUNTRY
+%token <string>TECTPLT 
+%token <string>POSIRTF
+%token <string>XCOORD
+%token <string>YCOORD
+%token <string>ZCOORD
+%token <string>ELEV
+%token <string>GNSSRCVINF
+%token <string>RCVTYP
+%token <string>SATSYS
+%token <string>SERIALN
+%token <string>FIRMVER
+%token <string>ELEVCUTOFF
+%token <string>DATREM
+%token <string>TEMPSTAB 
+%token <string>GNSSANTINF
+%token <string>ANTTYP
+%token <string>ANTREFPNT
+%token <string>MARKUP
+%token <string>MARKNORTH 
+%token <string>MARKEAST
+%token <string>ALIGNTRUE
+%token <string>ANTRNDTYP
+%token <string>RNDSERIALN 
+%token <string>ANTCABTYP
+%token <string>ANTCABLENGTH
 
 %type <unit> init
 %start init
@@ -48,7 +97,7 @@ header:
 	STRINGS ENTER STRINGS ENTER STRINGS TWODOTS ENTER STNAME ENTER 
 	{ Printf.printf "%s %s %s %s %s %c %s %s %s" $1 $2 $3 $4 $5 $6 $7 $8 $9; flush stdout}
 ;
-/************************** 0 FORM *************************************/
+/************************** 0 FORM ************************************/
 
 secform:
 
@@ -68,7 +117,7 @@ secform:
 	{ Printf.printf "%s%c%s%c%s %c%s%c%c%c%s%s" $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12; flush stdout}
 
 ;
-/*********** 1 Site Identification of the GNSS Monument *****************/
+/*********** 1 Site Identification of the GNSS Monument ***************/
 
 secsite:
 
@@ -111,7 +160,7 @@ secsite:
 | ADDINFO TWODOTS STRINGS ENTER
 	{Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}
 ;
-/************** 2 Site Location Information *****************************/
+/************** 2 Site Location Information ***************************/
 
 siteloc:
 
@@ -142,7 +191,8 @@ siteloc:
 | ADDINFO TWODOTS ENTER 
 	{ Printf.printf "%s %c %s" $1 $2 $3; flush stdout}
 ;
-/************** 3 GNSS Receiver Information  ************************* */
+
+/************** 3 GNSS Receiver Information  **************************/
 
 gnss_rec_info:
 
@@ -189,7 +239,7 @@ gnss_rec_info:
 	{Printf.printf "%s %c %s" $1 $2 $3; flush stdout}
 ;
 
-/************** 4 GNSS Antenna Information  ************************* */
+/************** 4 GNSS Antenna Information  ***************************/
 
 gnss_ant_info:
 
@@ -242,16 +292,16 @@ gnss_ant_info:
 	{ Printf.printf "%s %c %s %s %s %s" $1 $2 $3 $4 $5 $6; flush stdout}
 | ANTRNDTYP TWODOTS STRINGS DOT STRINGS STRINGS ENTER
 	{ Printf.printf "%s %c %s %c %s %s %s" $1 $2 $3 $4 $5 $6 $7; flush stdout}
-| RNDSERIALN TWODOTS ENTER   
+| RNDSERIALN TWODOTS STRINGS
 	{ Printf.printf "%s %c %s " $1 $2 $3; flush stdout}
 | ANTCABTYP TWODOTS STRINGS STRINGS ENTER
 	{ Printf.printf "%s %c %s %s %s "$1 $2 $3 $4 $5;  flush stdout}
 | ANTCABLENGTH TWODOTS STRINGS ENTER
 	{ Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}	
-| DATINST TWODOTS DATAS ENTER
-	{	Printf.printf "%s %c %s %s" $1 $2 (String.uppercase $3) $4; flush stdout}
-| DATREM TWODOTS DATAS ENTER
-	{	Printf.printf "%s %c %s %s" $1 $2 (String.uppercase $3) $4; flush stdout}
-| ADDINFO TWODOTS STRINGS ENTER
-{ Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}
+| DATINST TWODOTS DATAS
+	{	Printf.printf "%s %c %s" $1 $2 (String.uppercase $3); flush stdout}
+| DATREM TWODOTS DATAS
+	{	Printf.printf "%s %c %s" $1 $2 (String.uppercase $3); flush stdout}
+| ADDINFO TWODOTS STRINGS
+{ Printf.printf "%s %c %s" $1 $2 $3; flush stdout}
 ;
