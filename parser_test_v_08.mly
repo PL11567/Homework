@@ -195,9 +195,9 @@ gnss_rec_info:
 gnss_ant_info:
 
 | INTEIRO DOT GNSSANTINF ENTER
-	{Printf.printf "%i %c %s %s" $1 $2 $3 $4; flush stdout}
+	{Printf.printf "%i%c %s %s" $1 $2 $3 $4; flush stdout}
 | REAL ANTTYP TWODOTS STRINGS INTEIRO STRINGS ENTER
-	{Printf.printf "%f %s %c %s %i %s %s" $1 $2 $3 $4 $5 $6 $7; flush stdout}
+	{Printf.printf "%.1f %s %c %s %i %s %s" $1 $2 $3 $4 $5 $6 $7; flush stdout}
 | SERIALN TWODOTS ENTER
 	{ Printf.printf "%s %c %s" $1 $2 $3; flush stdout}
 | ANTREFPNT TWODOTS STRINGS ENTER
@@ -218,17 +218,17 @@ gnss_ant_info:
 	{ Printf.printf "%s %c %s" $1 $2 $3; flush stdout}
 | ANTCABLENGTH TWODOTS INTEIRO STRINGS ENTER
 	{ Printf.printf "%s %c %i %s %s" $1 $2 $3 $4 $5; flush stdout}
-| DATINST TWODOTS DATASIMPLES STRINGS INTEIRO TWODOTS INTEIRO ENTER
-	{ Printf.printf "%s %c %s %s %i %c %i %s" $1 $2 $3 $4 $5 $6 $7 $8; flush stdout}
-| DATREM TWODOTS STRINGS STRINGS STRINGS TWODOTS STRINGS ENTER
-	{ Printf.printf "%s %c %s %s %s %c %s %s" $1 $2 $3 $4 $5 $6 $7 $8; flush stdout}
+| DATINST TWODOTS DATAS ENTER
+	{	Printf.printf "%s %c %s %s" $1 $2 (String.uppercase $3) $4; flush stdout}
+| DATREM TWODOTS DATAS ENTER
+	{	Printf.printf "%s %c %s %s" $1 $2 (String.uppercase $3) $4; flush stdout}
 | ADDINFO TWODOTS ENTER
 	{ Printf.printf "%s %c %s" $1 $2 $3; flush stdout}	
 	
 /***   4.x  ***/
 
 | INTEIRO DOT STRINGS TWODOTS STRINGS INTEIRO STRINGS DOT STRINGS STRINGS ENTER
-	{ Printf.printf "%i %c %s %c %s %i %s %c %s %s %s" $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11; flush stdout}
+	{ Printf.printf "%i%c %s %c %s %i %s %c %s %s %s" $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11; flush stdout}
 | SERIALN TWODOTS STRINGS INTEIRO STRINGS INTEIRO STRINGS ENTER
 	{ Printf.printf "%s %c %s %i %s %i %s %s" $1 $2 $3 $4 $5 $6 $7 $8; flush stdout}
 | ANTREFPNT TWODOTS STRINGS STRINGS DOT STRINGS STRINGS DOT STRINGS ENTER
@@ -248,12 +248,11 @@ gnss_ant_info:
 | ANTCABTYP TWODOTS STRINGS STRINGS ENTER
 	{ Printf.printf "%s %c %s %s %s "$1 $2 $3 $4 $5;  flush stdout}
 | ANTCABLENGTH TWODOTS STRINGS ENTER
-	{ Printf.printf " %s %c %s %s" $1 $2 $3 $4; flush stdout}	
-| DATINST TWODOTS STRINGS STRINGS STRINGS TWODOTS STRINGS ENTER
-	{ Printf.printf "%s %c %s %s %s %c %s %s" $1 $2 $3 $4 $5 $6 $7 $8; flush stdout}
-| DATREM TWODOTS STRINGS STRINGS STRINGS TWODOTS STRINGS ENTER	
-	{ Printf.printf "%s %c %s %s %s %c %s %s" $1 $2 $3 $4 $5 $6 $7 $8; flush stdout}
+	{ Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}	
+| DATINST TWODOTS DATAS ENTER
+	{	Printf.printf "%s %c %s %s" $1 $2 (String.uppercase $3) $4; flush stdout}
+| DATREM TWODOTS DATAS ENTER
+	{	Printf.printf "%s %c %s %s" $1 $2 (String.uppercase $3) $4; flush stdout}
 | ADDINFO TWODOTS STRINGS ENTER
 { Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}
 ;
-%%
