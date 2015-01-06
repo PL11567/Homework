@@ -167,24 +167,27 @@ gnss_rec_info:
 	{ Printf.printf "%s %c %c %s %s" $1 $2 $3 $4 $5; flush stdout}
 | ADDINFO TWODOTS STRINGS ENTER 
 	{Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}
-| INTEIRO DOT STRINGS TWODOTS STRINGS INTEIRO STRINGS DOT STRINGS STRINGS ENTER
-	{Printf.printf "%i %c %s %c %s %i %s %c %s %s %s" $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11; flush stdout}
-| SATSYS TWODOTS STRINGS STRINGS ENTER
-	{Printf.printf "%s %c %s %s %s" $1 $2 $3 $4 $5; flush stdout}
-| SERIALN TWODOTS STRINGS INTEIRO STRINGS INTEIRO STRINGS ENTER
-	{Printf.printf "%s %c %s %i %s %i %s %s" $1 $2 $3 $4 $5 $6 $7 $8; flush stdout}
-| FIRMVER TWODOTS STRINGS INTEIRO STRINGS ENTER
-	{Printf.printf "%s %c %s %i %s %s" $1 $2 $3 $4 $5 $6; flush stdout}
-| ELEVCUTOFF TWODOTS STRINGS ENTER
-	{Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}
-| DATINST TWODOTS STRINGS STRINGS STRINGS TWODOTS STRINGS ENTER
-	{Printf.printf "%s %c %s %s %s %c %s %s" $1 $2 $3 $4 $5 $6 $7 $8; flush stdout}
-| DATREM TWODOTS STRINGS STRINGS STRINGS TWODOTS STRINGS ENTER
-	{Printf.printf "%s %c %s %s %s %c %s %s" $1 $2 $3 $4 $5 $6 $7 $8; flush stdout}
-| STRINGS DOT TWODOTS STRINGS ENTER
-	{Printf.printf "%s %c %c %s %s" $1 $2 $3 $4 $5; flush stdout}
-| ADDINFO TWODOTS STRINGS ENTER
-	{Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}
+
+/***  3.x  ***/
+
+| INTEIRO DOT STRINGS TWODOTS STRINGS
+	{Printf.printf "%i%c%s%c %s" $1 $2 $3 $4 ; flush stdout}
+| SATSYS TWODOTS STRINGS 
+	{Printf.printf "%s %c %s" $1 $2 $3 ; flush stdout}
+| SERIALN TWODOTS STRINGS 
+	{Printf.printf "%s %c %s" $1 $2 $3 ; flush stdout}
+| FIRMVER TWODOTS STRINGS 
+	{Printf.printf "%s %c %s" $1 $2 $3; flush stdout}
+| ELEVCUTOFF TWODOTS STRINGS 
+	{Printf.printf "%s %c %s" $1 $2 $3; flush stdout}
+| DATINST TWODOTS DATAS
+	{ Printf.printf "%s %c %s" $1 $2 (String.uppercase $3); flush stdout}
+| DATREM TWODOTS DATAS
+	{	Printf.printf "%s %c %s" $1 $2 (String.uppercase $3); flush stdout}
+| STRINGS DOT TWODOTS STRINGS
+	{Printf.printf "%s %c %c %s" $1 $2 $3 $4; flush stdout}
+| ADDINFO TWODOTS STRINGS
+	{Printf.printf "%s %c %s" $1 $2 $3; flush stdout}
 ;
 
 /************** 4 GNSS Antenna Information  ************************* */
