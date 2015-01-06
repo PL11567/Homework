@@ -1,4 +1,4 @@
- ARGN Site Information Form (site log)
+ARGN Site Information Form (site log)
      International GPS Service
      See Instructions at:
        ftp://igscb.jpl.nasa.gov/pub/station/general/sitelog_instr.txt
@@ -87,7 +87,7 @@
      Radome Serial Number     :
      Antenna Cable Type       :
      Antenna Cable Length     : 30 m
-     Date Installed           : 2010-07-01T00:00
+     Date Installed           : 2010-07-01T00:00Z
      Date Removed             : (CCYY-MM-DDThh:mmZ)
      Additional Information   :
 
