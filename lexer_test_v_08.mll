@@ -31,21 +31,21 @@ let string_table = create_hashtable 57
 		  ("Monument Foundation", MNMTFND "Monument Foundation");
 		  ("Foundation Depth", FNDDPTH "Foundation Depth");
 		  ("Marker Description", MRKRDESC "Marker Description");
-          ("Date Installed", DATINST "Date Installed");
-          ("Geologic Characteristic", GLCCHCTSC "Geologic Characteristic");
-          ("Bedrock Type", BDRCKTYP "Bedrock Type");
-          ("Bedrock Condition", BDRCKCOND "Bedrock Condition");
-          ("Fracture Spacing", FRACTSPAC "Fracture Spacing");
-          ("Fault zones nearby", FAULTZN "Fault zones nearby");
-          ("Distance/activity", DSTACT "Distance/activity");
-          ("Additional Information", ADDINFO "Additional Information");
-          ("Site Location Information", GNSSTRINF "Site Location Information");
+	          ("Date Installed", DATINST "Date Installed");
+	          ("Geologic Characteristic", GLCCHCTSC "Geologic Characteristic");
+	          ("Bedrock Type", BDRCKTYP "Bedrock Type");
+	          ("Bedrock Condition", BDRCKCOND "Bedrock Condition");
+	          ("Fracture Spacing", FRACTSPAC "Fracture Spacing");
+	          ("Fault zones nearby", FAULTZN "Fault zones nearby");
+	          ("Distance/activity", DSTACT "Distance/activity");
+	          ("Additional Information", ADDINFO "Additional Information");
+	          ("Site Location Information", GNSSTRINF "Site Location Information");
 		  ("City or Town", CITY "City or Town");
-          ("State or Province", STATE "State or Province");
-          ("Country", COUNTRY "Country");
-          ("Tectonic Plate", TECTPLT "Tectonic Plate");
-          ("Approximate Position (ITRF)", POSIRTF "Approximate Position (ITRF)");
-          ("X coordinate (m)", XCOORD "X coordinate (m)");
+	          ("State or Province", STATE "State or Province");
+	          ("Country", COUNTRY "Country");
+	          ("Tectonic Plate", TECTPLT "Tectonic Plate");
+	          ("Approximate Position (ITRF)", POSIRTF "Approximate Position (ITRF)");
+	          ("X coordinate (m)", XCOORD "X coordinate (m)");
 		  ("Y coordinate (m)", YCOORD "Y coordinate (m)");
 		  ("Z coordinate (m)", ZCOORD "Z coordinate (m)");
 		  ("Elevation (m,ellips.)", ELEV "Elevation (m,ellips.)");
@@ -71,9 +71,7 @@ let string_table = create_hashtable 57
 		]
 }
 
-let id_datas = ['0'-'9']['0'-'9']['0'-'9']['0'-'9']['-']['0'-'9']['0'-'9']['-']['0'-'9']['0'-'9']['T']['0'-'9']['0'-'9'][':']['0'-'9']['0'-'9'][' ']*['Z''z']
-let id_datasvazias = ['C']['C']['Y']['Y']['-']['M']['M']['-']['D']['D']['T']['h']['h'][':']['m']['m']['Z']
-
+let id_datas = ['0'-'9']['0'-'9']['0'-'9']['0'-'9']['-']['0'-'9']['0'-'9']['-']['0'-'9']['0'-'9']['T']['0'-'9']['0'-'9'][':']['0'-'9']['0'-'9'][' ']*['Z''z'] | ['(']['C']['C']['Y']['Y']['-']['M']['M']['-']['D']['D']['T']['h']['h'][':']['m']['m']['Z'][')']
 let id_menos = ['-']
 let id_mais = ['+']
 let id_datasimples = ['0'-'9']['0'-'9']['0'-'9']['0'-'9']id_menos['0'-'9']['0'-'9']id_menos['0'-'9']['0'-'9']
@@ -113,7 +111,7 @@ rule tokenize = parse
  | id_datasimples as datasimples { DATASIMPLES (datasimples) }
  | (id_stname as stname) { STNAME (stname) }
  | id_coordenada as coordenada { COORDENADA (coordenada) }
- | id_datasvazias as datasvazias { DATASVAZIAS (datasvazias)}
+ (* | id_datasvazias as datasvazias { DATASVAZIAS (datasvazias)} *)
  | id_datas as datas 
 		{ 
 		let remove_blanks = Str.global_replace (Str.regexp "[ ]+") "" in DATAS (remove_blanks datas)
@@ -129,7 +127,6 @@ rule tokenize = parse
   		}
  | _ { tokenize lexbuf }
  | eof { raise End_of_file }
-
 
 {
 
