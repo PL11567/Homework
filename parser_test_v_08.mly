@@ -222,8 +222,8 @@ gnss_ant_info:
 	{	Printf.printf "%s %c %s %s" $1 $2 (String.uppercase $3) $4; flush stdout}
 | DATREM TWODOTS DATAS ENTER
 	{	Printf.printf "%s %c %s %s" $1 $2 (String.uppercase $3) $4; flush stdout}
-| ADDINFO TWODOTS ENTER
-	{ Printf.printf "%s %c %s" $1 $2 $3; flush stdout}	
+| ADDINFO TWODOTS STRINGS ENTER
+	{ Printf.printf "%s %c %s %s" $1 $2 $3 $4; flush stdout}
 	
 /***   4.x  ***/
 
