@@ -2,7 +2,7 @@ OCAMLC=ocamlc
 OCAMLLEX=ocamllex
 OCAMLYACC=ocamlyacc
 all: parser.cmo lexer.cmo main.cmo
-	ocamlc -o teste lexer.cmo parser.cmo main.cmo
+	ocamlc -o teste str.cma lexer.cmo parser.cmo main.cmo 
 main.cmo: main.ml parser.cmo lexer.cmo
 	ocamlc -c main.ml
 
@@ -21,4 +21,4 @@ parser.mli parser.ml: parser.mly
 lexer.ml: lexer.mll parser.cmi
 	ocamllex lexer.mll
 clean:
-	rm *.cmo *.cmi
+	rm *.cmo *.cmi *.mli
