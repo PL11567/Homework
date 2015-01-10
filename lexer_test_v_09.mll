@@ -97,7 +97,6 @@ let id_markeast = ('M''a''r''k''e''r''-''>''A''R''P'' ''E''a''s''t'' ''E''c''c''
 let id_blank = [ '\t' ' ']
 
 rule tokenize = parse
-  
  | id_inteiro as inteiro { INTEIRO (int_of_string inteiro) } 
  | id_real as real { REAL (float_of_string real)}
  | id_dot as dot { DOT (dot)}
@@ -109,7 +108,7 @@ rule tokenize = parse
  | id_markeast as markeast { MARKEAST (markeast)}
  | id_blank*(id_twodots as twodots) id_blank* { TWODOTS (twodots)}
  
- | id_enter as enter { ENTER (enter) }	
+ | id_enter as enter { ENTER (enter)}	
 						
  | id_ficheiro as ficheiro { FICHEIRO (ficheiro) }
  | id_datasimples as datasimples { DATASIMPLES (datasimples) }
@@ -119,6 +118,7 @@ rule tokenize = parse
 		{ 
 		let remove_blanks = Str.global_replace (Str.regexp "[ ]+") "" in DATAS (remove_blanks datas)
 		}
+
 	
  | id_blank *(id_strings as word) id_blank *
   		{ 
