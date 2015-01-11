@@ -4,7 +4,7 @@
 	open Lexing
 	open String
 	open Str
-	exception Eof
+	let line_num = ref 1
 
 let create_hashtable size init =
     let tbl = Hashtbl.create size in
@@ -70,31 +70,42 @@ let string_table = create_hashtable 57
 		  ("Antenna Cable Length", ANTENNA_CABLE_LENGHT "Antenna Cable Length");
 		]
 	
-
+ 
 }
+let id_dash = ['-']
+let id_leftparen = ['(']
+let id_rightparen = [')']
 
-let id_datas = ['0'-'9']['0'-'9']['0'-'9']['0'-'9']['-']['0'-'9']['0'-'9']['-']['0'-'9']['0'-'9']['T']['0'-'9']['0'-'9'][':']['0'-'9']['0'-'9'][' ']*['Z''z'] | ['(']['C']['C']['Y']['Y']['-']['M']['M']['-']['D']['D']['T']['h']['h'][':']['m']['m']['Z'][')']
-let id_menos = ['-']
-let id_mais = ['+']
-let id_datasimples = ['0'-'9']['0'-'9']['0'-'9']['0'-'9']id_menos['0'-'9']['0'-'9']id_menos['0'-'9']['0'-'9']
-let id_dot = ['.']
 let id_twodots = [':']
-let id_enter = ['\n']*
+let digit = ['0'-'9']
+let id_datas = 
+				digit digit digit digit id_dash digit digit id_dash digit digit['T']digit digit id_twodots digit digit[' ']* ['Z''z'] 
+			   | id_leftparen ['C']['C']['Y']['Y']id_dash['M']['M']id_dash['D']['D']['T']['h']['h']id_twodots['m']['m']['Z']id_rightparen
+			   
+
+let id_plus = ['+']
+let id_datasimples = digit digit digit digit id_dash digit digit id_dash digit digit
+let id_dot = ['.']
+
+
 let id_espaco = [' ']+
 let id_slash = ['/']
 let id_strings = ['a'-'z' 'A'-'Z' '_' ',' '(' ')' ' ' '/']*
+
 let id_stname = id_strings id_twodots id_slash id_slash id_strings id_dot id_strings id_dot id_strings id_dot id_strings id_slash id_strings id_slash id_strings id_slash id_strings id_slash id_strings id_dot id_strings
-let id_inteiro = ['0'-'9']+
-let id_fracspacing = (id_inteiro id_menos id_inteiro)
+let id_inteiro = digit+
+let id_fracspacing = (id_inteiro id_dash id_inteiro)
 let id_real =  (id_inteiro id_dot id_inteiro)
-let id_coordenada = (id_mais id_real) | (id_menos id_real)
+let id_coordenada = (id_plus id_real) | (id_dash id_real)
 let id_ficheiro =  (id_strings id_inteiro+ id_dot 'l''o''g') |  ('(''s''s''s''s''_''c''c''y''y''m''m''d''d' '.' 'l''o''g'')')
-let id_latlong = ('L''a''t''i''t''u''d''e'' ''(''N'' ''i''s'' '(id_mais)')'' ') | ('L''o''n''g''i''t''u''d''e'' ''(''E'' ''i''s'' '(id_mais)')'' ')
+let id_latlong = ('L''a''t''i''t''u''d''e'' ''(''N'' ''i''s'' '(id_plus)')'' ') | ('L''o''n''g''i''t''u''d''e'' ''(''E'' ''i''s'' '(id_plus)')'' ')
 let id_tempstab = ('T''e''m''p''e''r''a''t''u''r''e'' ''S''t''a''b''i''l''i''z'(id_dot))
 let id_markup = ('M''a''r''k''e''r''-''>''A''R''P'' ''U''p'' ''E''c''c'(id_dot)' ''(''m'')')
 let id_marknorth = ('M''a''r''k''e''r''-''>''A''R''P'' ''N''o''r''t''h'' ''E''c''c''(''m'')')
 let id_markeast = ('M''a''r''k''e''r''-''>''A''R''P'' ''E''a''s''t'' ''E''c''c''(''m'')')
-let id_blank = [ '\t' ' ']
+let id_elev1 =('E''l''e''v''a''t''i''o''n'(id_espaco)(id_leftparen)'m'',''e''l''l''i''p''s'(id_dot)(id_rightparen))
+let id_blank = [' ''\r''\t']
+let id_enter = ['\n']
 
 rule tokenize = parse
  | id_inteiro as inteiro { INTEIRO (int_of_string inteiro) } 
@@ -106,14 +117,15 @@ rule tokenize = parse
  | id_markup as markup { MARKUP (markup) }
  | id_marknorth as marknorth { MARKNORTH (marknorth)}
  | id_markeast as markeast { MARKEAST (markeast)}
- | id_blank*(id_twodots as twodots) id_blank* { TWODOTS (twodots)}
+ | id_blank* (id_elev1 as elev1){ ELEV1 elev1} 
  
- | id_enter as enter { ENTER (enter)}	
-						
+ | id_blank*(id_twodots as twodots) id_blank* { TWODOTS (twodots)}
  | id_ficheiro as ficheiro { FICHEIRO (ficheiro) }
  | id_datasimples as datasimples { DATASIMPLES (datasimples) }
  | (id_stname as stname) { STNAME (stname) }
- | id_coordenada as coordenada { COORDENADA (coordenada) }
+ | id_blank* (id_coordenada as coordenada) { COORDENADA (coordenada) }
+ | id_enter as enter { incr line_num; tokenize lexbuf }
+ 
  | id_datas as datas 
 		{ 
 		let remove_blanks = Str.global_replace (Str.regexp "[ ]+") "" in DATAS (remove_blanks datas)
@@ -122,13 +134,14 @@ rule tokenize = parse
 	
  | id_blank *(id_strings as word) id_blank *
   		{ 
+			
   			let word_no_spaces = String.trim word in 
   			try 
 				(let res =  Hashtbl.find string_table word_no_spaces in res)
 		  	with 
 				Not_found -> STRINGS word
   		}
- | _ { tokenize lexbuf }
+ | _ { tokenize lexbuf  }
  | eof { raise End_of_file }
 
 {
